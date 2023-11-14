@@ -1,0 +1,256 @@
+3)Para las siguientes expresiones lambda:
+a)Identificar las ocurrencias de variables libres y ligadas:
+
+4) ( λx.( ( λz.z x ) ( λx.x ) ) ) y
+funcion: ( λx.( ( λz.z x ) ( λx.x ) ) )
+cuerpo de λx: ( λz.z x ) ( λx.x )
+param 1: y -> y está libre
+( λz.z x ) -> z está ligado a λz, x está ligada a λx 
+
+
+3.5)( λx.( ( λy.x y ) z ) ) ( λx.x y )
+funcion: ( λx.( ( λy.x y ) z ) )
+
+cuerpo: ( ( λy.x y ) z ) -> z libre, x ligado a λx de la funcion, y ligado a λy del cuerpo
+
+param 1: ( λx.x y ) -> x esta ligada a λx, y está libre
+
+
+6)( ( λy.( λx.( ( λx.λy.x ) x ) ) y ) M ) N
+
+funcion: ( λy.( λx.( ( λx.λy.x ) x ) ) y ) 
+cuerpo del λy: ( λx.( ( λx.λy.x2 ) x1 ) ) y  -> y ligada a λy de la funcion,
+x1 ligada al λx de mas afuera, x2 ligada a λx de adentro
+param1: M
+param2: N
+
+
+7)( λx.λy.λx.x y z ) (λx.λy.y) M N
+funcion: ( λx.λy.λx.x y z )
+cabeza: λx
+cuerpo:  λy.λx.x y z  -> z libre, x ligada a λx del cuerpo, y ligada a λy de cuerpo
+
+param 1: (λx.λy.y) -> y ligada a λy del param1
+param2: M
+param3: N
+
+b)Reducir a su forma normal aplicando las reglas alfa, beta y eta, utilizandoorden normal y orden aplicativo, y comparar los resultados.
+1)( λx.( ( λy.y ) x ) ) z
+funcion: ( λx.( ( λy.y ) x ) )
+param 1: z
+
+Reduccion por orden normal:
+((λy.y) x) --> reemplazando x por z
+((λy.y) z)
+(λy.y) z
+reduccion ==> z
+
+Reduccion por orden aplicativo:
+(λx.((λy.y) x)) z
+Funcion : (λx.((λy.y) x))
+param1 : z
+el P1 no se puede reducir
+Cuerpo: ((λy.y) x)
+(λy.y) x
+x
+ahora tenemos:
+(λx. x) z
+
+ni el cuerpo ni el param se pueden reducir
+reduccion ==> z
+
+respuesta: ON = OA = z 
+
+2)( λx.λy.x y ) ( z y )
+Funcion: ( λx.λy.x y )
+Cuerpo: λy.x y
+param1: z
+param2: y
+
+Reduccion por orden normal:
+( λx.λy.x y ) ( z y )
+cambio de variable:
+( λx.λu.x u ) ( z y )
+cuerpo de λx: λu.x u -> no se puede reducir
+param 1: ( z y) -> no se puede reducir
+
+como no se puede reducir cuerpo ni param:
+reduccion ==>( λu.(z y) u )
+
+Reduccion por orden aplicativo:
+( λx.λy.x y ) ( z y )
+cambio de variable:
+( λx.λu.x u ) ( z y )
+cuerpo de λx: λu.x u -> no se puede reducir
+param 1: ( z y) -> no se puede reducir
+
+como no se puede reducir cuerpo ni param:
+reduccion ==>( λu.(z y) u )
+
+ON = OA = ( λu.(z y) u )
+
+3)( λx.λy.x ) x y
+OBS: EN ESTE CASO NO HACE FALTA EL CAMBIO DE
+VARIABLE YA Q x esta libre en el param y al 
+"entrar" sigue libre. SI estaba libre en el param
+y al entrar se liga, entonces tengo q hacer el cambio de variable!
+
+funcion: ( λx.λy.x )
+cuerpo: (λy.x ) -> no se puede reducir
+param1: x -> no se puede reducir
+param2: y -> no se puede reducir
+no se puede reducir cuerpo ni param
+reduccion ==> ( λy.x ) y ==> x
+
+Para las siguientes expresiones lambda:
+a)Identificar las ocurrencias de variables libres y ligadas.
+b)Reducir a su forma normal aplicando las reglas alfa, beta y eta, utilizandoorden normal y orden aplicativo, y comparar los resultados.
+
+4)( λx.( ( λz.z x ) ( λx.x ) ) ) y
+Funcion: ( λx.( ( λz.z x ) ( λx.x ) ) )
+Cuerpo: ( ( λz.z x1 ) ( λx.x2 ) ) -> z ligado a λz del cuerpo,
+				  -> x1 ligado a λx de la funcion
+				  -> x2 ligado a λx del cuerpo 
+param1: y -> y esta libre
+
+Reduccion por orden normal:
+( λx.( ( λz.z x ) ( λx.x ) ) ) y
+cambio de variable
+( λx.( ( λz.z x ) ( λu.u ) ) ) y
+( ( λz.z y ) ( λu.u ) )
+( λz.z y ) ( λu.u )
+funcion: ( λz.z y )
+param1: ( λu.u )
+( λz.z y ) ( λu.u )
+( λu.u ) y
+y
+
+==> reduccion O.N. = y
+
+
+Reduccion por orden Aplicativo:
+( λx.( ( λz.z x ) ( λx.x ) ) ) y
+cambio de variable
+( λx.( ( λz.z x ) ( λu.u ) ) ) y
+( λx.( ( ( λu.u ) x ) ) ) y
+( λx.( ( ( x ) ) ) ) y
+( λx. x ) y
+y
+
+==> reduccion O.A. = y
+
+Entonces la reduccion: O.N. = O.A. = y
+
+5)( λx.( ( λy.x y ) z ) ) ( λx.x y )
+Funcion: ( λx.( ( λy.x y ) z ) )
+Cuerpo: ( ( λy.x y ) z ) -> z libre
+			 -> x ligada a λx de la funcion
+			 -> y ligada a λy del cuerpo
+
+param1: ( λx.x y ) -> x ligada a λx del param1
+		   -> y libre
+
+Reduccion por orden normal:
+( λx.( ( λy.x y ) z ) ) ( λx.x y )
+( λx.( ( λy.x y ) z ) ) y
+cambio de variable:
+( λx.( ( λu.x u ) z ) ) y
+( ( λu.y u ) z )
+(y z )
+==> reduccion O.N. = ( y z )
+
+Reduccion por orden aplicativo:
+( λx.( ( λy.x y ) z ) ) ( λx.x y )
+( λx.( ( x z ) ) ) ( λx.x y )
+( λx.x z ) ( λx.x y )
+( ( λx.x y ) z )
+( z y )
+
+==> reduccion O.A. = ( z y )
+
+En este caso no coincide el resultado
+==> reduccion O.N. = ( y z )
+==> reduccion O.A. = ( z y )
+
+
+6)( ( λy.( λx.( ( λx.λy.x ) x ) ) y ) M ) N
+1~) SACO PARENTESIS DE MAS:
+( λy.( λx.( ( λx.λy.x ) x ) ) y ) M N
+
+funcion : ( λy.( λx.( ( λx.λy.x ) x ) ) y )
+cuerpo
+param1: M -> libre
+param2: N -> libre
+
+O.N
+( λy.( λx.( ( λx.λy.x ) x ) ) y ) M N
+( λx.( ( λx.λy.x ) x ) ) M N
+( λx.λy.x ) M ) N
+( λy.M ) N
+M
+
+O.A
+( λy.( λx.( ( λx.λy.x ) x ) ) y ) M N
+( λy.( λx.( ( λy.x ) ) ) y ) M N
+( λy.( λx.λy.x ) y ) M N
+( ( λx.λy.x ) M ) N
+( λy. M ) N
+M
+
+==> O.A = O.N
+
+7)( λx.λy.λx.x y z ) (λx.λy.y) M N
+
+FUNCION:( λx.λy.λx.x y z )
+param1 ->  (λx.λy.y)
+param2 -> M
+param3 -> N
+
+O.N
+( λx.λy.λx.x y z ) (λx.λy.y) M N
+( λy.λx1.x y z ) M N
+( λx1.x1 M z ) N
+N M z
+
+O.A -> NO SE PUEDE REDUCIR EL CUERPO NI LOS PARAM => OA = ON
+( λx.λy.λx.x y z ) (λx.λy.y) M N
+( λy.λx1.x y z ) M N
+( λx1.x1 M z ) N
+N M z
+
+O.A = O.N 
+
+
+8)( ( λx.( λy.λz.z ) x ) ( ( λx.x x x ) ( λx.x x x ) ) ) x
+
+ PRIMERO) ELIMINO PARENTESIS DE MAS:
+ ( λx.( λy.λz.z ) x ) ( ( λx.x x x ) ( λx.x x x ) ) x
+
+funcion: ( λx.( λy.λz.z ) x ) ( ( λx.x x x ) ( λx.x x x ) )
+param1 -> x 
+
+O.N
+( λx.( λy.λz.z ) x ) ( ( λx.x x x ) ( λx.x x x ) ) x
+( ( λy.λz.z ) x ) ( ( λx1.x1 x1 x1 ) ( λx2.x2 x2 x2 ) )
+nueva funcion: ( ( λy.λz.z ) x )
+param1 -> ( ( λx1.x1 x1 x1 ) ( λx2.x2 x2 x2 ) )
+
+( ( λy.λz.z ) x ) ( ( λx1.x1 x1 x1 ) ( λx2.x2 x2 x2 ) )
+( ( λz.z ) x )
+( λz.z ) x
+x
+
+O.A
+( λx.( λy.λz.z ) x ) ( ( λx.x x x ) ( λx.x x x ) ) x
+cuerpo: ( λy.λz.z ) x
+param1: ( ( λx.x x x ) ( λx.x x x ) )
+param2 -> x
+
+( λx.( λy.λz.z ) x ) ( ( λx.x x x ) ( λx.x x x ) ) x
+reduzco el cuerpo
+( λy.λz.z ) ( ( λx.x x x ) ( λx.x x x ) ) x
+reduzco param1 -> ( ( λx.x x x ) ( λx.x x x ) )
+	       -> ( λx.x x x ) ( λx.x x x ) ( λx.x x x )
+		-> ( λx.x x x ) ( λx.x x x ) ( λx.x x x ) ( λx.x x x ) ( λx.x x x )...
+entra en un loop infinito ==> no tiene solucion por O.A
+
