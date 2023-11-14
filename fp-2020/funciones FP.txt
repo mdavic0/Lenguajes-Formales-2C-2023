@@ -1,0 +1,202 @@
+EJ: Maximo entre dos numeros:
+    Def max = (> -> 1 ; 2)
+
+    max: <2, 3>
+    2 > 3 ? -> F     ==> devuelve 2:<2, 3> = 3
+
+EJ: Maximo de una secuencia:
+    Def maxSec = /max
+
+    el / es como el / de APL (de izquierda a derecha) y como el reduce de Clojure (en clojure lo hace de izq a derecha)
+    maxsec: <2, 3, 6, 5, 4>   ==> devuelve 6 , como? compara <5, 4> -> 5
+                                                            <6 5> -> 6
+                                                            <3 6> -> 6
+                                                            <2 6> -> 6
+
+EJ: Determinar si un elemento pertenece a una secuencia:
+    Def pertenece = /or o @eq o distl
+
+    pertenece: <5 , <1 2 4 5>>     ==> devuelve T
+        distl:<5 <1 2 4 5>> = <<1 5> <2 5> <4 5> <5 5>>
+        @eq:<<1 5> <2 5> <4 5> <5 5>> = <F F F T>
+        /or: <F F F T> = T
+ 
+
+EJ: Dada una secuencia, eliminar elementos vacios:
+    
+    1) insertar elemento vacio a la derecha que va a guardar el resultado final:
+        apndr o [id, ~<>]
+    2) comparo elemento a elemento, si el 1ro es null entonces devuelvo el segundo (que va 
+        a ser la secuencia que agregue al final, si no es nulo entonces lo agrego a la secuencia)
+    De este modo se eliminan los elementos vacios:
+
+    Def EV = /(null o 1 -> 2 ; apndl) o apndr o [id, ~<>]
+
+3. Dada una secuencia con dos subsecuencias, definir funciones para determinar:
+    a) La unión de ambas subsecuencias.
+        Def union = /apndl o apndr
+
+        ej: < <1 2 3> < 4 5 6> >
+        apndr: < <1 2 3> < 4 5 6> > devuelve -> <1 2 3 <4 5 6>
+        apndl: <3 <4 5 6>> devuelve -> <3 4 5 6>
+        apndl: <2 <3 4 5 6>> devuelve -> <2 3 4 5 6>
+        apndl <1 <2 3 4 5 6>> devuelve -> <1 2 3 4 5 6>
+
+    b) La intersección de ambas subsecuencias.
+        Si pertenece <1 <1 2 3 4>> devuelve 1
+        Caso contrario <1 <2 3 4>> devuelve <>
+            Def pertenece2 = pertenece -> 1 ; ~<>
+
+        Def interseccion = EV o @pertenece2 o distr
+
+        EJ: <<1 2 3 5> <2 3 6>>
+        distr: <<1 2 3 5> <2 3 6>>  devuelve ->  <<1, <2, 3, 6>>, <2, <2, 3, 6>>, <3, <2, 3, 6>>, <5, <2, 3, 6>>>
+        luego aplica pertenece2 a cada elemento: @pertenece2:<<1, <2, 3, 6>>, <2, <2, 3, 6>>, <3, <2, 3, 6>>, <5, <2, 3, 6>>>
+        esto devuelve: <<>, 2, 3, <>>
+        por lo que finalmente se eliminan los vacios: EV:<<>, 2, 3, <>> y esto devuelve <2 3> que es la interseccion
+
+    c) La diferencia de ambas subsecuencias.
+        La diferencia es A - B
+        EJ: Dado un numero y una secuencia, si el numero pertenece a la sec devuelve el num, sino elemento vacio:
+        Def quitarElemento = pertenece -> ~<> ; 1
+
+        Def diferencia = EV o @quitarElemento o distr
+
+        Ej: <<1 2 3 5 6> <2 5>>
+        distr: <<1 2 5 6> <2 5>> devuelve: <<1 <2 5>> <2 <2 5>> <5 <2 5>> <6 <2 5>>>
+        luego @quitarElemento: <<1 <2 5>> <2 <2 5>> <5 <2 5>> <6 <2 5>>>
+        quitar elemento lo saca si el elemento pertenece a la secuencia => devuelve: <1 <> <> 6>
+        finalmente: EV : <1 <> <> 6> devuelve -> <1 6>
+    d) La diferencia simétrica de ambas subsecuencias.
+        La diferencia simetrica se calcula como (A - B) U (B - A)
+
+        Def diferenciaSimetrica = union o [diferencia , diferencia o [2 , 1]]
+
+
+14. Dada una secuencia de pares ordenados donde la primera componente indica el
+equipo que resultó ganador y la segunda indica el perdedor y donde cada par
+ordenado indica un partido jugado (no hay empates) obtener:
+
+a) Los equipos invictos.
+
+< <IN BO> <IN RI> <RO RI>>
+
+devuelve -> <IN RO>
+
+ganadores = <IN IN RO>
+Def ganadores = @1
+
+perdedores = <BO RI RI>
+Def perdedores = @2
+
+
+
+Ej: Dada una secuencia de atomos, eliminar los repetidos
+ 1) agrego elemento vacio al final para almacenar resultado final
+    ->     [id; ~<>]
+ 2) comparo elemento a elemento, si pertenece entonces no lo agrego, caso contrario lo agrego  
+
+Eliminar Repetidos:
+    Def perteneceAux = pertenece -> 2 ; apndl
+    Def ER = /perteneceAux o apndr o [id; ~<>]
+
+
+    invictos = ganadores - perdedores
+
+    Def invictos = ER o diferencia o [ganadores, perdedores] 
+
+    Ejemplo:
+        invictos: < <IN BO> <IN RI> <RO RI> >
+
+
+OBS: A la funcion diferencia en el parcial hay que definirla!
+
+
+c) Los que ganaron más veces de las que perdieron.
+
+ En el ambiente: < <IN BO> <IN RI> <RO RI> <BO PAL> <BO RI>>
+ IN gano 2 y perdio 0
+ RO gano 1 y perdio 0
+ BO gano 2 y perdio 1
+ PAL gano 0 y perdio 1
+ RI gano 0 y perdio 3
+
+ devuelve -> <IN RO BO> 
+
+ 1)  Obtengo secuencia de todos los equipos:
+        Def equiposSinRep =  ER o /union
+
+        Ej: equipos: < <IN BO> <IN RI> <RO RI> <BO PAL> <BO RI> >
+        devuelve -> <IN, RO, PAL, BO, RI>
+
+ 2) Obtengo secuencia de ganadores:
+    Def ganadores = @1
+
+ 3) Obtengo secuencia de perdedores:
+    Def perdedores = @2
+
+ 4) distr o [equiposSinRep , ganadores]
+    Esto da una secuencia de <  <eq1 <Ganadores...> > , <eq2 <ganadores> .... >
+     <<IN, <IN, IN, RO, BO, BO>>, <RO, <IN, IN, RO, BO, BO>>, <PAL, <IN, IN, RO, BO, BO>>, <BO, <IN, IN, RO, BO, BO>>, <RI, <IN, IN, RO, BO, BO>>>
+ 
+ 5) contar la cantidad de ocurrencias de cada equipo en la secuencia de ganadores:
+    
+    Def contar =  /+ o @(eq -> ~1; ~0) o distl
+    ej: <RI, <>>
+
+    finalmente: 
+        Def contarGanados = @contar o distr o [equiposSinRep, ganadores]
+
+        Def contarPerdidos = @contar o distr o [equiposSinRep, perdedores]
+
+    	con esto, puedo hacer:
+            Def estadisticasPorEquipo = trans o [equiposSinRep, contarGanados, contarPerdidos]
+            y esto devuelve: <<IN, 2, 0>, <RO, 1, 0>, <PAL, 0, 1>, <BO, 2, 1>, <RI, 0, 3>>
+            es decir, los trios <equipo #ganados #perdidos>
+
+        con estos trios armados puedo filtrar y quedarme con los que ganaron mas de lo que perdieron:
+            Def masGanadosQuePerdidos = EV o @(> o [2, 3] -> 1 ; ~<>) o estadisticasPorEquipo
+
+Para el parcial estudiar: pertenece, contar, eliminar vacio, eliminar repetido, union, diferencia
+
+ENTREGAR POR MAIL:
+10. Definir una función selector por izquierda para arreglos de n dimensiones.
+Ej: < <3, 2>, < <A, B, C>, <D, E, F>, <G, H, I> > >
+    esto es, el primer elemento tiene el par fila/culumna, y el segundo elemento es una matriz
+    devuelve ->  <H>
+
+    1) obtengo el arreglo:
+        Def obtenerArreglo = 2
+
+    2) seleccionar elemento:
+        // Esta funcion booleana devuelve true si id > 1, false en caso contrario 
+        Def noEstaEnLaPrimeraPosicion =  > o [id, ~1]
+
+        // decr decrementa en 1 el indice
+        Def decr = - o [id, ~1]
+
+        // Para seleccionar el elemento deseado se utiliza recursividad. En este caso selecciona el primer elemento (que
+        // es el indice) y se consulta si no esta en la primera posicion, en tal caso se llama nuevamente a seleccionarElemento
+        // pero descartando el primer elemento y decrementando el indice (ya que se sabe que el elemento deseado no esta ahi).
+        // En caso de que el indice sea 1, entonces se selecciona el primer elemento del arreglo
+        
+        Def seleccionarElemento = (noEstaEnLaPrimeraPosicion o 1 -> seleccionarElemento o [decr o 1, tl o 2] ; 1 o obtenerArreglo)
+        
+            Ej: seleccionarElemento: <3 <A B C D E F>>
+                    RESULT: C
+
+    3) obtener elemento:
+        // Ahora para pasar a dos dimensiones:
+
+        // La condicion de corte es verificar si el indice es null (~<>), en tal caso ya fue seleccionado el elemento y por lo
+        // tanto se devuelve 2 (es decir el elemento ya que la secuencia sera: < <> , elemento>)
+        // en caso de que el indice no sea null, entonces se hace una llamada recursiva a obtener elemento, pero antes 
+        // se selecciona un elemento (en la primera llamada se selecciona la fila) y se descarta el indice usado (en la primera
+        // llamada el numero de fila), y en la segunda llamada se selecciona la columna y se descarta el indice usado (el numero de 
+        // columna) y por ende ya se obtiene el elemento deseado, en este punto el indice ya quedo vacio <>
+        // por lo que en la llamada posterior se da la condicion de corte y se retorna dicho elemento.
+
+        Def selectorPorIzquierda = (null o 1 -> 2 ; selectorPorIzquierda o [tl o 1, seleccionarElemento o [1 o 1, obtenerArreglo]])
+        
+        EJ: selectorPorIzquierda : < <3, 2>, < <A, B, C>, <D, E, F>, <G, H, I> > >
+                RESULT: H
