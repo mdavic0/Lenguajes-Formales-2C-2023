@@ -13,8 +13,6 @@
 ;"EJ:1. Definir la función tercer-angulo que reciba los valores de dos de
 ;los ángulos interiores de un triángulo y devuelva el valor del restante."
 
-((fn [a b] (- 180 (+ b a) )) 50 30)
-
 (defn tercer-angulo [a b] (- 180 (+ b a) ))
 
 version pro:
